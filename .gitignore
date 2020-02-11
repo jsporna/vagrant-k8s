@@ -1,3 +1,5 @@
 .idea
 .vagrant
 ansible/join-command
+ansible/roles/redhatofficial.*
+ansible/.kube/config
