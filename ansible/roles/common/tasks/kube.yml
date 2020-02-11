@@ -1,0 +1,45 @@
+- name: Add Kubernetes GPG key.
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items:
+  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+- name: Add Kubernetes repo
+  yum_repository:
+    name: kubernetes
+    description: Google Cloud Kubernetes repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+
+- name:
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Install Kubernetes binaries
+  yum:
+    name: ["kubelet", "kubeadm", "kubectl"]
+    state: present
+    disable_excludes: kubernetes
+
+- name: Configure node IP
+  lineinfile:
+    path: /etc/default/kubelet
+    line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+    create: yes
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+- name: Import tasks for Kubernetes Master Nodes
+  import_tasks: kube_master.yml
+  when: master_node == 'True'
+
+- name: Import tasks for Kubernetes Worker Nodes
+  import_tasks: kube_worker.yml
+  when: master_node == 'False'

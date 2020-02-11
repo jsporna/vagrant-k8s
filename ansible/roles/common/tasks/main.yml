@@ -1,0 +1,11 @@
+- name: Import docker tasks
+  import_tasks: docker.yml
+
+- name: Import swap tasks
+  import_tasks: swap.yml
+
+- name: Import network tweaks
+  import_tasks: network.yml
+
+- name: Import kubernetes tasks
+  import_tasks: kube.yml

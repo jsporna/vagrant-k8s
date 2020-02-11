@@ -1,0 +1,38 @@
+- name: Check that cluster has been initialized
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubeadm_init_result
+
+- name: Initialize Kubernetes cluster using kubeadm
+  command: kubeadm init --apiserver-advertise-address="{{ node_ip }}" --apiserver-cert-extra-sans="{{ node_ip }}" --node-name {{ node_name }} --pod-network-cidr=192.168.0.0/16
+  when: kubeadm_init_result.stat.exists == False
+
+- name: Create .kube folder for vagrant user
+  file:
+    path: /home/vagrant/.kube
+    state: directory
+    owner: vagrant
+    group: vagrant
+
+- name: Copy kubeconfig to vagrant user folder
+  copy:
+    remote_src: yes
+    src: /etc/kubernetes/admin.conf
+    dest: /home/vagrant/.kube/config
+    owner: vagrant
+    group: vagrant
+
+- name: Install Calico POD network
+  become: no
+  command: kubectl create -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Copy join command to local file
+  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+
+- name: Taint nodes
+  become: no
+  command: kubectl taint nodes --all node-role.kubernetes.io/master-

@@ -14,7 +14,7 @@
 
 - name: Add Docker repository.
   get_url:
-    url: https://download.docker.com/linux/{{ (ansible_distribution == "Fedora") | ternary("fedora","centos") }}/docker-ce.repo
+    url: https://download.docker.com/linux/centos/docker-ce.repo
     dest: '/etc/yum.repos.d/docker-ce.repo'
     owner: root
     group: root
@@ -22,13 +22,39 @@
 
 - name: Install Docker.
   package:
-    name: docker-ce
+    name: "{{ item }}"
     state: present
+  with_items:
+  - containerd.io
+  - docker-ce
+  - docker-ce-cli
   notify: restart docker
+
+- name: Create Docker configuration directory
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy Docker configuration file
+  copy:
+    src: docker.json
+    dest: /etc/docker/docker.json
+    owner: root
+    group: root
+
+- name: Create Docker systemd service directory
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
 
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
+    daemon_reload: yes
     state: started
     enabled: true
 
