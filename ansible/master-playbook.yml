@@ -2,7 +2,8 @@
 - hosts: all
   become: true
   roles:
-  - common
+  - centos7_ospp
+  - kubernetes
   vars:
     master_node: 'True'
 
