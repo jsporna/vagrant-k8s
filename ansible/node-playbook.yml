@@ -3,6 +3,4 @@
   become: true
   roles:
   - common
-  vars:
-    master_node: 'True'
 
