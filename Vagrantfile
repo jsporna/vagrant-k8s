@@ -1,4 +1,4 @@
-WORKER_NODES=2
+WORKER_NODES=1
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
             node.vm.network "private_network", ip: "192.168.50.#{i + 20}"
             node.vm.hostname = "k8s-node-#{i}"
             node.vm.provision "ansible" do |ansible|
-                ansible.playbook = "ansible/node-playbook.yml"
+                ansible.playbook = "ansible/worker-playbook.yml"
                 ansible.extra_vars = {
                     node_ip: "192.168.50.#{i + 20}",
                     node_name: "k8s-node-#{i}"
