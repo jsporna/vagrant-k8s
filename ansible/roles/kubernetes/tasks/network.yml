@@ -1,0 +1,18 @@
+- name: enable kernel module
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - overlay
+  - br_netfilter
+
+- name: sysctl network tweaks
+  sysctl:
+    name: "{{ item }}"
+    value: '1'
+    state: present
+    sysctl_set: yes
+  with_items:
+  - net.bridge.bridge-nf-call-iptables
+  - net.ipv4.ip_forward
+  - net.bridge.bridge-nf-call-ip6tables

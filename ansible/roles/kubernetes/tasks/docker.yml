@@ -39,8 +39,8 @@
 
 - name: Copy Docker configuration file
   copy:
-    src: docker.json
-    dest: /etc/docker/docker.json
+    src: docker.daemon.json
+    dest: /etc/docker/daemon.json
     owner: root
     group: root
 
