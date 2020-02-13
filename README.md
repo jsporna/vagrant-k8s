@@ -4,7 +4,13 @@ Kubernetes local stack based on CentOS 7 build with Vagrant and Ansible on Virtu
 
 ## Motivation
 
-Run local stack of kubernetes for testing multi node network policies
+Run local stack of kubernetes for testing multi node network policies.
+Kubernetes nodes are hardened using ansible role based on [RedHatOfficial.rhel7_ospp](https://galaxy.ansible.com/RedHatOfficial/rhel7_ospp) Ansible Galaxy Role.
+Ansible role to prepare system for kubernetes is based on:
+* [Kubernetes Setup Using Ansible and Vagrant](https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant/), 
+* [Kubernetes Documentation - Container runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/),
+* [Kubernetes on CentOS 7 with Firewalld](https://medium.com/platformer-blog/kubernetes-on-centos-7-with-firewalld-e7b53c1316af),
+
 
 ## Prerequisites
 
